@@ -4,6 +4,7 @@ import com.fanha.basic_user_crud.domain.dto.UserRequest;
 import com.fanha.basic_user_crud.domain.dto.UserResponse;
 import com.fanha.basic_user_crud.domain.entity.User;
 import com.fanha.basic_user_crud.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class UserController {
     private UserService service;
 
     @PostMapping
-    public ResponseEntity<UserRequest> createUser(@RequestBody UserRequest newUser) {
+    public ResponseEntity<UserRequest> createUser(@Valid @RequestBody UserRequest newUser) {
         service.createUser(newUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }

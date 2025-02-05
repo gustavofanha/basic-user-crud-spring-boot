@@ -3,9 +3,13 @@ package com.fanha.basic_user_crud.service;
 import com.fanha.basic_user_crud.domain.dto.UserRequest;
 import com.fanha.basic_user_crud.domain.dto.UserResponse;
 import com.fanha.basic_user_crud.domain.entity.User;
+import com.fanha.basic_user_crud.exception.UniqueMethodsException;
+import com.fanha.basic_user_crud.exception.UserNotFoundException;
 import com.fanha.basic_user_crud.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,9 +22,13 @@ public class UserService {
     private UserRepository repository;
 
     public void createUser(UserRequest userRequest) {
-        User newUser = new User();
-        BeanUtils.copyProperties(userRequest, newUser);
-        repository.save(newUser);
+        try {
+            User newUser = new User();
+            BeanUtils.copyProperties(userRequest, newUser);
+            repository.save(newUser);
+        } catch (DataIntegrityViolationException e) {
+            throw new UniqueMethodsException();
+        }
     }
 
     public List<UserResponse> findAllUsers() {
@@ -39,7 +47,7 @@ public class UserService {
                 user.getName(),
                 user.getDocument(),
                 user.getEmail()))
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public void deleteUser(Long id) {
@@ -47,9 +55,13 @@ public class UserService {
     }
 
     public User updateUser(Long id, User dataUpdate) {
-        var user = repository.getReferenceById(id);
-        updateData(user, dataUpdate);
-        return repository.save(user);
+        try {
+            var user = repository.getReferenceById(id);
+            updateData(user, dataUpdate);
+            return repository.save(user);
+        } catch (EntityNotFoundException e) {
+            throw new UserNotFoundException(id);
+        }
     }
 
     public void updateData(User oldData, User newData) {
