@@ -1,1 +1,1 @@
-﻿## A User CRUD made in SpringBoot and H2 database
+﻿## A User CRUD made in SpringBoot framework and H2 database
