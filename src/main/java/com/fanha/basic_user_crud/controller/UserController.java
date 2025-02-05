@@ -2,6 +2,7 @@ package com.fanha.basic_user_crud.controller;
 
 import com.fanha.basic_user_crud.domain.dto.UserRequest;
 import com.fanha.basic_user_crud.domain.dto.UserResponse;
+import com.fanha.basic_user_crud.domain.entity.User;
 import com.fanha.basic_user_crud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,5 +34,17 @@ public class UserController {
     public ResponseEntity<UserResponse> findUserById(@PathVariable Long id) {
         var userId = service.findUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(userId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        service.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userUpdated) {
+        service.updateUser(id, userUpdated);
+        return ResponseEntity.status(HttpStatus.OK).body(userUpdated);
     }
 }

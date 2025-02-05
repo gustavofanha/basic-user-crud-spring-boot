@@ -41,4 +41,21 @@ public class UserService {
                 user.getEmail()))
                 .orElseThrow();
     }
+
+    public void deleteUser(Long id) {
+        repository.deleteById(id);
+    }
+
+    public User updateUser(Long id, User dataUpdate) {
+        var user = repository.getReferenceById(id);
+        updateData(user, dataUpdate);
+        return repository.save(user);
+    }
+
+    public void updateData(User oldData, User newData) {
+        oldData.setName(newData.getName());
+        oldData.setEmail(newData.getEmail());
+        oldData.setDocument(newData.getDocument());
+        oldData.setPassword(newData.getPassword());
+    }
 }
